@@ -18,16 +18,19 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
         }
 
         .game-container {
             display: flex;
-            gap: 30px;
-            padding: 30px;
+            gap: 20px;
+            padding: 15px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+            border-radius: 15px;
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-height: 100vh;
+            overflow: auto;
         }
 
         .game-board {
@@ -38,34 +41,36 @@
             border: 4px solid #e94560;
             border-radius: 10px;
             box-shadow: 0 0 30px rgba(233, 69, 96, 0.5);
+            display: block;
+            max-width: 100%;
         }
 
         .side-panel {
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            min-width: 180px;
+            gap: 12px;
+            min-width: 120px;
         }
 
         .panel-box {
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
+            border-radius: 10px;
+            padding: 10px 15px;
             border: 2px solid rgba(233, 69, 96, 0.5);
         }
 
         .panel-box h3 {
             color: #e94560;
-            font-size: 18px;
-            margin-bottom: 15px;
+            font-size: 14px;
+            margin-bottom: 8px;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             text-align: center;
         }
 
         .score-display, .level-display, .lines-display {
             color: #fff;
-            font-size: 28px;
+            font-size: 20px;
             font-weight: bold;
             text-align: center;
             text-shadow: 0 0 10px rgba(233, 69, 96, 0.8);
@@ -102,13 +107,13 @@
 
         #startBtn, #pauseBtn {
             width: 100%;
-            padding: 15px;
-            font-size: 16px;
+            padding: 10px;
+            font-size: 14px;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -191,28 +196,28 @@
         /* 触屏控制按钮 */
         .mobile-controls {
             display: none;
-            margin-top: 20px;
-            gap: 15px;
+            margin-top: 10px;
+            gap: 10px;
             justify-content: center;
             align-items: center;
         }
 
         .mobile-controls-row {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             justify-content: center;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .control-btn {
-            width: 70px;
-            height: 70px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
-            border: 3px solid rgba(233, 69, 96, 0.8);
+            border: 2px solid rgba(233, 69, 96, 0.8);
             background: linear-gradient(135deg, rgba(233, 69, 96, 0.3), rgba(194, 58, 81, 0.3));
             color: #e94560;
-            font-size: 28px;
+            font-size: 20px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -232,19 +237,9 @@
         }
 
         .control-btn.rotate-btn {
-            width: 80px;
-            height: 80px;
-            font-size: 24px;
-        }
-
-        .control-btn.down-btn {
-            width: 70px;
-            height: 70px;
-        }
-
-        .control-btn.left-btn, .control-btn.right-btn {
-            width: 70px;
-            height: 70px;
+            width: 55px;
+            height: 55px;
+            font-size: 18px;
         }
 
         /* 方向键图标 */
@@ -255,8 +250,8 @@
         @media (max-width: 600px) {
             .game-container {
                 flex-direction: column;
-                padding: 15px;
-                gap: 15px;
+                padding: 10px;
+                gap: 10px;
             }
 
             .side-panel {
@@ -264,25 +259,26 @@
                 flex-wrap: wrap;
                 justify-content: center;
                 min-width: auto;
+                gap: 8px;
             }
 
             .panel-box {
-                padding: 10px 15px;
-                min-width: 100px;
+                padding: 8px 12px;
+                min-width: 80px;
             }
 
             .panel-box h3 {
-                font-size: 14px;
-                margin-bottom: 8px;
+                font-size: 12px;
+                margin-bottom: 5px;
             }
 
             .score-display, .level-display, .lines-display {
-                font-size: 22px;
+                font-size: 18px;
             }
 
             #nextCanvas {
-                width: 80px;
-                height: 80px;
+                width: 60px;
+                height: 60px;
             }
 
             .controls {
@@ -291,13 +287,26 @@
 
             #startBtn, #pauseBtn {
                 width: auto;
-                padding: 12px 25px;
-                font-size: 14px;
+                padding: 8px 20px;
+                font-size: 13px;
+                flex: 1;
             }
 
             .mobile-controls {
                 display: flex;
                 flex-direction: column;
+                width: 100%;
+            }
+
+            .control-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            .control-btn.rotate-btn {
+                width: 55px;
+                height: 55px;
             }
         }
     </style>
@@ -305,7 +314,7 @@
 <body>
     <div class="game-container">
         <div class="game-board">
-            <canvas id="gameCanvas" width="300" height="600"></canvas>
+            <canvas id="gameCanvas" width="200" height="400"></canvas>
             <div class="game-over-overlay" id="gameOverOverlay">
                 <h2>游戏结束</h2>
                 <p>得分：<span id="finalScore">0</span></p>
@@ -327,7 +336,7 @@
             </div>
             <div class="panel-box">
                 <h3>下一个</h3>
-                <canvas id="nextCanvas" width="120" height="120"></canvas>
+                <canvas id="nextCanvas" width="100" height="100"></canvas>
             </div>
             <div class="panel-box">
                 <h3>操作</h3>
@@ -359,7 +368,7 @@
         // 游戏配置
         const COLS = 10;
         const ROWS = 20;
-        const BLOCK_SIZE = 30;
+        const BLOCK_SIZE = 20;
         const COLORS = [
             null,
             '#00f0f0', // I - 青色
