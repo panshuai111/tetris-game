@@ -23,16 +23,16 @@
 
         .game-container {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding: 8px;
+            flex-direction: row;
+            gap: 12px;
+            padding: 12px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             max-height: 100vh;
             overflow: auto;
-            align-items: center;
+            align-items: flex-start;
         }
 
         .game-board {
@@ -45,8 +45,8 @@
             box-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
             display: block;
             max-width: 100%;
-            width: 120px;
-            height: 240px;
+            width: 300px;
+            height: 600px;
         }
 
         .info-bar {
@@ -83,7 +83,10 @@
         }
 
         .side-panel {
-            display: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 140px;
         }
 
         .label {
@@ -261,6 +264,7 @@
                 flex-direction: column;
                 padding: 10px;
                 gap: 10px;
+                align-items: center;
             }
 
             .side-panel {
@@ -323,10 +327,11 @@
 <body>
     <div class="game-container">
         <div class="game-board">
-            <canvas id="gameCanvas" width="120" height="240"></canvas>
+            <canvas id="gameCanvas" width="300" height="600"></canvas>
             <div class="game-over-overlay" id="gameOverOverlay">
                 <h2>游戏结束</h2>
                 <p>得分：<span id="finalScore">0</span></p>
+                <p>最高分：<span id="finalBestScore">0</span></p>
                 <button onclick="restartGame()">重新开始</button>
             </div>
         </div>
@@ -342,6 +347,10 @@
             <div class="panel-box">
                 <h3>消除行数</h3>
                 <div class="lines-display" id="lines">0</div>
+            </div>
+            <div class="panel-box">
+                <h3>最高分</h3>
+                <div class="score-display" id="bestScore">0</div>
             </div>
             <div class="panel-box">
                 <h3>下一个</h3>
@@ -363,6 +372,7 @@
             <div class="mobile-controls" id="mobileControls">
                 <div class="mobile-controls-row">
                     <button class="control-btn rotate-btn" id="rotateBtn" data-icon="↻"></button>
+                    <button class="control-btn rotate-btn" id="hardDropBtn" data-icon="⬇"></button>
                 </div>
                 <div class="mobile-controls-row">
                     <button class="control-btn left-btn" id="leftBtn" data-icon="←"></button>
@@ -377,7 +387,7 @@
         // 游戏配置
         const COLS = 10;
         const ROWS = 20;
-        const BLOCK_SIZE = 12;
+        const BLOCK_SIZE = 30;
         const COLORS = [
             null,
             '#00f0f0', // I - 青色
@@ -414,6 +424,7 @@
         let isGameOver = false;
         let isPlaying = false;
         let dropInterval = 1000;
+        let bestScore = parseInt(localStorage.getItem('tetrisBestScore') || '0');
 
         // 方块类
         class Piece {
@@ -443,6 +454,7 @@
             nextCanvas = document.getElementById('nextCanvas');
             nextCtx = nextCanvas.getContext('2d');
             resetBoard();
+            updateUI();
             draw();
             drawNext();
         }
@@ -614,6 +626,7 @@
                 if (newLevel > level) {
                     level = newLevel;
                     dropInterval = Math.max(100, 1000 - (level - 1) * 100);
+                    updateInterval();
                 }
 
                 updateUI();
@@ -687,6 +700,11 @@
             }
         }
 
+        function updateInterval() {
+            if (gameLoop) clearInterval(gameLoop);
+            gameLoop = setInterval(gameStep, dropInterval);
+        }
+
         function startGame() {
             resetBoard();
             score = 0;
@@ -708,8 +726,7 @@
             document.getElementById('pauseBtn').style.display = 'block';
             document.getElementById('gameOverOverlay').classList.remove('active');
 
-            if (gameLoop) clearInterval(gameLoop);
-            gameLoop = setInterval(gameStep, dropInterval);
+            updateInterval();
         }
 
         function restartGame() {
@@ -739,7 +756,13 @@
             isPlaying = false;
             clearInterval(gameLoop);
 
+            if (score > bestScore) {
+                bestScore = score;
+                localStorage.setItem('tetrisBestScore', bestScore);
+            }
+
             document.getElementById('finalScore').textContent = score;
+            document.getElementById('finalBestScore').textContent = bestScore;
             document.getElementById('gameOverOverlay').classList.add('active');
             document.getElementById('pauseBtn').style.display = 'none';
         }
@@ -748,6 +771,7 @@
             document.getElementById('score').textContent = score;
             document.getElementById('level').textContent = level;
             document.getElementById('lines').textContent = lines;
+            document.getElementById('bestScore').textContent = bestScore;
         }
 
         // 键盘控制
@@ -792,6 +816,7 @@
             const rightBtn = document.getElementById('rightBtn');
             const rotateBtn = document.getElementById('rotateBtn');
             const downBtn = document.getElementById('downBtn');
+            const hardDropBtn = document.getElementById('hardDropBtn');
 
             // 绑定按钮事件（支持触摸和点击）
             function bindControl(btn, action) {
@@ -847,6 +872,12 @@
                         score += 1;
                         updateUI();
                     }
+                }
+            });
+
+            bindControl(hardDropBtn, () => {
+                if (isPlaying && !isPaused && !isGameOver) {
+                    hardDrop();
                 }
             });
         }
